@@ -1,74 +1,94 @@
-# Setting Up the Todo Web Project
+Here is the complete step-by-step guide to setting up your **Todo Web** project with React, including the necessary libraries, project structure, CSS, and API handling.
 
-This guide will walk you through the steps to set up a **Todo Web** project from scratch, including installing necessary libraries.
+---
 
-## Step 1: Initialize the Project
+### **1. Initialize the Project**
 
-Start by creating a new React project using `create-react-app` for a quick setup.
+Start by creating a new React project using `create-react-app`:
 
-1. Open your terminal and run the following command to create a new React project:
-
+1. **Open your terminal** and run the following command to create a new React project:
+   
    ```bash
    npx create-react-app todo-web
    ```
 
-   This command will create a new project folder named `todo-web` and install the necessary dependencies for React.
-
-2. Once the project is created, navigate to the project folder:
+2. **Navigate to the project directory**:
 
    ```bash
    cd todo-web
    ```
 
-3. Run the development server to ensure everything is working:
+3. **Start the development server** to verify that everything is set up:
 
    ```bash
    npm start
    ```
 
-   Your app will now be running at `http://localhost:3000`.
+   Your app should now be running at `http://localhost:3000`.
 
-## Step 2: Install Additional Libraries
+---
 
-Next, we'll install additional libraries for routing, notifications, cookies management, and making HTTP requests.
+### **2. Install Necessary Libraries**
 
-1. **React Router**: Used for routing and navigation within the app.
+Next, you'll install libraries for routing, HTTP requests, notifications, and cookie management.
 
+1. **React Router** – For routing and navigation:
+   
    ```bash
    npm install react-router-dom
    ```
 
-2. **React Hot Toast**: For displaying toast notifications (e.g., success, error).
+2. **React Hot Toast** – For toast notifications (e.g., success, error messages):
 
    ```bash
    npm install react-hot-toast
    ```
 
-3. **React Cookie**: For managing cookies (used for storing the authentication token).
+3. **React Cookie** – For cookie management (used for storing the auth token):
 
    ```bash
    npm install react-cookie
    ```
 
-4. **Axios**: For making HTTP requests to the API.
+4. **Axios** – For making HTTP requests to the API:
 
    ```bash
    npm install axios
    ```
 
-5. **React**: If not already installed (it’s usually installed with `create-react-app`).
+---
 
-   ```bash
-   npm install react react-dom
-   ```
+### **3. Project Structure**
 
-## Step 3: Modify the Project
+Your project structure will look like this:
 
-Now let's modify the project to use routing and connect it with the API for login functionality.
+```
+todo-web/
+├── public/
+│   └── index.html
+├── src/
+│   ├── api/
+│   │   └── client.js
+│   ├── components/
+│   │   └── Auth/
+│   │       ├── SignIn.css
+│   │       └── SignIn.js
+│   ├── App.js
+│   ├── index.css
+│   ├── index.js
+│   ├── utils/
+│   │   └── someUtil.js
+├── .env
+├── package.json
+├── README.md
+└── node_modules/
+```
 
-### 1. **Set up Routing in `App.js`**
+---
 
-You need to use `react-router-dom` for managing navigation between pages. Modify `src/App.js` to add routing:
+### **4. Set Up Routing in `App.js`**
+
+In **`src/App.js`**, set up routing to handle navigation:
 
 ```jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -100,14 +120,17 @@ function App() {
 export default App;
 ```
 
-### 2. **Create the SignIn Page in `SignIn.js`**
+This sets up routing for the `SignIn` component.
 
-Create the login page with a form for entering the username and password. Use `react-hot-toast` to display success or error messages when logging in:
+---
+
+### **5. Create the SignIn Component**
+
+In **`src/components/Auth/SignIn.js`**, create a sign-in page with form inputs for the username and password. Use `react-hot-toast` to display success or error messages when submitting the form:
 
 ```jsx
 import React, { useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import apiClient from '../../api/client';
 import './SignIn.css';
@@ -182,9 +205,9 @@ const SignIn = () => {
 
         <div className="register-section">
           <span>Don't have an account? </span>
-          <Link to="/register" className="register-link">
+          <a href="/register" className="register-link">
             Register here
-          </Link>
+          </a>
         </div>
       </form>
     </div>
@@ -194,9 +217,11 @@ const SignIn = () => {
 export default SignIn;
 ```
 
-### 3. **Set up Axios in `client.js`**
+---
 
-Create the file `src/api/client.js` for setting up Axios to make HTTP requests and add an interceptor for handling the token in the headers:
+### **6. Set Up Axios in `client.js`**
+
+Create the **`src/api/client.js`** file to set up Axios for making HTTP requests and add an interceptor for handling the token in the headers:
 
 ```js
 import axios from 'axios';
@@ -226,11 +251,128 @@ apiClient.interceptors.response.use(
 export default apiClient;
 ```
 
-## Summary of Installed Libraries
+This sets up the Axios client to automatically attach the token to each request and handle 401 errors (unauthorized access).
 
-1. **react-router-dom** – For managing routing and navigation within the app.
-2. **react-hot-toast** – For displaying toast notifications.
-3. **react-cookie** – For managing cookies (storing the token).
-4. **axios** – For making HTTP requests to the API.
+---
 
-Your project is now ready to go!
+### **7. Add CSS for the SignIn Component**
+
+Create the **`src/components/Auth/SignIn.css`** file for styling the `SignIn` component:
+
+```css
+/* Overall container for the sign-in page */
+.signin-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f0f4f8;
+  font-family: Arial, sans-serif;
+}
+
+/* SignIn form style */
+.signin-form {
+  background: #fff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.app-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-title {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  font-size: 14px;
+  color: #555;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  color: #333;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4BB543;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #45a040;
+}
+
+.register-section {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+.register-link {
+  color: #4BB543;
+  text-decoration: none;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
+```
+
+This provides basic styles for your sign-in form.
+
+---
+
+### **8. Set Up Environment Variables**
+
+Create a `.env` file in the root of your project to store environment-specific variables:
+
+```env
+REACT_APP_API_URL=http://localhost:8787
+```
+
+This makes it easier to change the API URL based on the environment (development, production).
+
+---
+
+### **Summary of Installed Libraries:**
+
+1. **react-router-dom** – For routing and navigation within the app.
+2. **react-hot-toast** – For displaying toast notifications (success, error).
+3. **react-cookie** – For managing cookies (e.g., storing the authentication token).
+4.
+
+ **axios** – For making HTTP requests to the backend API.
+
+---
+
+### **9. Next Steps**
+
+- Build out other parts of the application such as **todo creation**, **todo listing**, and **todo deletion**.
+- Add a protected route that redirects the user to the sign-in page if they are not authenticated.
