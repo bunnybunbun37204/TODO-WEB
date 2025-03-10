@@ -29,6 +29,7 @@ const SignIn = () => {
       const errorMessage = err.response?.data?.message || 'Login failed';
       toast.error(errorMessage, {
         position: 'top-center',
+        duration: 5000,
         style: {
           background: '#ff4444',
           color: '#fff',
