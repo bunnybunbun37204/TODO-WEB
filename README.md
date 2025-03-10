@@ -1,7 +1,3 @@
-Here is the complete step-by-step guide to setting up your **Todo Web** project with React, including the necessary libraries, project structure, CSS, and API handling.
-
----
-
 ### **1. Initialize the Project**
 
 Start by creating a new React project using `create-react-app`:
