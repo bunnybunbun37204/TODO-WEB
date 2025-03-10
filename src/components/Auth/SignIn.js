@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import apiClient from '../../api/client';
 import './SignIn.css';
@@ -9,7 +9,7 @@ const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [_, setCookie] = useCookies(['token']);
+  const [, setCookie] = useCookies(['token']);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -17,7 +17,14 @@ const SignIn = () => {
     setLoading(true);
 
     try {
-      const { data } = await apiClient.post('/token', { username, password });
+      const { data } = await apiClient.post('/tokens', { username, password });
+      toast.success('Login successful', {
+        position: 'top-center',
+        style: {
+          background: '#4BB543',
+          color: '#fff',
+        },
+      });
       setCookie('token', data.token, { path: '/' });
       navigate('/');
     } catch (err) {
@@ -37,7 +44,8 @@ const SignIn = () => {
   return (
     <div className="signin-container">
       <form className="signin-form" onSubmit={handleSubmit}>
-        <h2>Sign In</h2>
+        <h1 className="app-title">Todo</h1>
+        <h2 className="form-title">Sign In</h2>
 
         <div className="form-group">
           <label>Username</label>
@@ -66,6 +74,13 @@ const SignIn = () => {
         >
           {loading ? 'Signing In...' : 'Sign In'}
         </button>
+
+        <div className="register-section">
+          <span>Don't have an account? </span>
+          <Link to="/register" className="register-link">
+            Register here
+          </Link>
+        </div>
       </form>
     </div>
   );
