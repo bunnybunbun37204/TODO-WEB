@@ -1,70 +1,236 @@
-# Getting Started with Create React App
+# Setting Up the Todo Web Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This guide will walk you through the steps to set up a **Todo Web** project from scratch, including installing necessary libraries.
 
-## Available Scripts
+## Step 1: Initialize the Project
 
-In the project directory, you can run:
+Start by creating a new React project using `create-react-app` for a quick setup.
 
-### `npm start`
+1. Open your terminal and run the following command to create a new React project:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+   ```bash
+   npx create-react-app todo-web
+   ```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+   This command will create a new project folder named `todo-web` and install the necessary dependencies for React.
 
-### `npm test`
+2. Once the project is created, navigate to the project folder:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   ```bash
+   cd todo-web
+   ```
 
-### `npm run build`
+3. Run the development server to ensure everything is working:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   ```bash
+   npm start
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   Your app will now be running at `http://localhost:3000`.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Step 2: Install Additional Libraries
 
-### `npm run eject`
+Next, we'll install additional libraries for routing, notifications, cookies management, and making HTTP requests.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. **React Router**: Used for routing and navigation within the app.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+   ```bash
+   npm install react-router-dom
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+2. **React Hot Toast**: For displaying toast notifications (e.g., success, error).
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+   ```bash
+   npm install react-hot-toast
+   ```
 
-## Learn More
+3. **React Cookie**: For managing cookies (used for storing the authentication token).
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   ```bash
+   npm install react-cookie
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+4. **Axios**: For making HTTP requests to the API.
 
-### Code Splitting
+   ```bash
+   npm install axios
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+5. **React**: If not already installed (it’s usually installed with `create-react-app`).
 
-### Analyzing the Bundle Size
+   ```bash
+   npm install react react-dom
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Step 3: Modify the Project
 
-### Making a Progressive Web App
+Now let's modify the project to use routing and connect it with the API for login functionality.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### 1. **Set up Routing in `App.js`**
 
-### Advanced Configuration
+You need to use `react-router-dom` for managing navigation between pages. Modify `src/App.js` to add routing:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```jsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import SignIn from "./components/Auth/SignIn";
 
-### Deployment
+function App() {
+  return (
+    <BrowserRouter>
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 3000,
+          success: {
+            style: {
+              background: "#4BB543",
+              color: "#fff",
+            },
+          },
+        }}
+      />
+      <Routes>
+        <Route path="/" element={<SignIn />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+export default App;
+```
 
-### `npm run build` fails to minify
+### 2. **Create the SignIn Page in `SignIn.js`**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Create the login page with a form for entering the username and password. Use `react-hot-toast` to display success or error messages when logging in:
+
+```jsx
+import React, { useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import apiClient from '../../api/client';
+import './SignIn.css';
+
+const SignIn = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [, setCookie] = useCookies(['token']);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { data } = await apiClient.post('/tokens', { username, password });
+      toast.success('Login successful', {
+        position: 'top-center',
+        style: {
+          background: '#4BB543',
+          color: '#fff',
+        },
+      });
+      setCookie('token', data.token, { path: '/' });
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || 'Login failed';
+      toast.error(errorMessage, {
+        position: 'top-center',
+        style: {
+          background: '#ff4444',
+          color: '#fff',
+        },
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="signin-container">
+      <form className="signin-form" onSubmit={handleSubmit}>
+        <h1 className="app-title">Todo</h1>
+        <h2 className="form-title">Sign In</h2>
+
+        <div className="form-group">
+          <label>Username</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        <button 
+          type="submit" 
+          className="submit-button"
+          disabled={loading}
+        >
+          {loading ? 'Signing In...' : 'Sign In'}
+        </button>
+
+        <div className="register-section">
+          <span>Don't have an account? </span>
+          <Link to="/register" className="register-link">
+            Register here
+          </Link>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default SignIn;
+```
+
+### 3. **Set up Axios in `client.js`**
+
+Create the file `src/api/client.js` for setting up Axios to make HTTP requests and add an interceptor for handling the token in the headers:
+
+```js
+import axios from 'axios';
+
+const apiClient = axios.create({
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8787',
+});
+
+apiClient.interceptors.request.use((config) => {
+  const token = document.cookie.split('; ').find(row => row.startsWith('token='))?.split('=')[1];
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      window.location.href = '/';
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default apiClient;
+```
+
+## Summary of Installed Libraries
+
+1. **react-router-dom** – For managing routing and navigation within the app.
+2. **react-hot-toast** – For displaying toast notifications.
+3. **react-cookie** – For managing cookies (storing the token).
+4. **axios** – For making HTTP requests to the API.
+
+Your project is now ready to go!
