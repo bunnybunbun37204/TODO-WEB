@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { Link } from 'react-router-dom';
+import { Link, Route, Router, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import apiClient from '../../api/client';
 import './SignIn.css';
@@ -10,6 +10,7 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [, setCookie] = useCookies(['token']);
+  const navigator = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,6 +26,7 @@ const SignIn = () => {
         },
       });
       setCookie('token', data.token, { path: '/' });
+      navigator('/activities');
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Login failed';
       toast.error(errorMessage, {
