@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import SignIn from "./components/Auth/SignIn";
-import Activity from "./components/Activity/Activity";
+import Main from "./components/Main/Main";
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
       />
       <Routes>
         <Route path="/" element={<SignIn />} />
-        <Route path="/activities" element={<Activity />} />
+        <Route path="/main" element={<Main />} />
       </Routes>
     </BrowserRouter>
   );
