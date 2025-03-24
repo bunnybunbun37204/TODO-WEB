@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8787',
+  baseURL: 'http://localhost:5062',
 });
 
 apiClient.interceptors.request.use((config) => {
@@ -16,7 +16,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-    //   window.location.href = '/';
+       window.location.href = '/';
     }
     return Promise.reject(error);
   }

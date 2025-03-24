@@ -17,7 +17,7 @@ const SignIn = () => {
     setLoading(true);
 
     try {
-      const { data } = await apiClient.post('/tokens', { username, password });
+      const { data } = await apiClient.post('/Tokens', { nationalId: username, password });
       toast.success('Login successful', {
         position: 'top-center',
         style: {
@@ -26,7 +26,7 @@ const SignIn = () => {
         },
       });
       setCookie('token', data.token, { path: '/' });
-      navigator('/activities');
+      navigator('/main');
     } catch (err) {
       const errorMessage = err.response?.data?.message || 'Login failed';
       toast.error(errorMessage, {
